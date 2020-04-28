@@ -10,10 +10,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Login Example',
       debugShowCheckedModeBanner: false,
-      initialRoute: 'home',
+      initialRoute: 'login',
       routes: {
-        'home' : (BuildContext context) => HomePage(),
-        'login' : (BuildContext context) => LoginPage(),
+        'home'    : (BuildContext context) => HomePage(),
+        'login'   : (BuildContext context) => LoginPage(),
 
       },
     );
