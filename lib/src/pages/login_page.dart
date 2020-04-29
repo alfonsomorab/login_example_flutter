@@ -175,7 +175,7 @@ class LoginPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
 
         return RaisedButton(
-          onPressed: (!snapshot.hasData) ? null : (){},
+          onPressed: (!snapshot.hasData) ? null : () => login(context),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 5.0),
             child: Text('Ingresar'),
@@ -189,6 +189,11 @@ class LoginPage extends StatelessWidget {
 
       },
     );
+
+  }
+
+  login(BuildContext context){
+    Navigator.pushReplacementNamed(context, 'home');
 
   }
 }
