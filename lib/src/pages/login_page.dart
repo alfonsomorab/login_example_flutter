@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginexample/src/blocs/provider.dart';
 
 class LoginPage extends StatelessWidget {
 
@@ -67,6 +68,7 @@ class LoginPage extends StatelessWidget {
 
   _createLoginForm(BuildContext context) {
 
+    final bloc = Provider.of(context);
     final size = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
@@ -99,11 +101,11 @@ class LoginPage extends StatelessWidget {
               children: <Widget>[
                 Text('Ingreso', style: TextStyle(fontSize: 20.0),),
                 SizedBox(height: 60.0),
-                _createInputEmail(),
+                _createInputEmail( bloc ),
                 SizedBox(height: 30.0),
-                _createInputPassword(),
+                _createInputPassword( bloc ),
                 SizedBox(height: 30.0),
-                _createButton(),
+                _createButton( bloc ),
               ],
             ),
           ),
@@ -117,45 +119,76 @@ class LoginPage extends StatelessWidget {
 
   }
 
-  _createInputEmail(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: TextField(
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          icon: Icon( Icons.alternate_email , color: Colors.deepPurple ),
-          hintText: 'ejemplo@correo.com',
-          labelText: 'Correo electrónico',
-        ),
-      ),
+  _createInputEmail( LoginBloc bloc ){
+
+    return StreamBuilder(
+      stream: bloc.emailStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: TextField(
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              icon: Icon( Icons.alternate_email , color: Colors.deepPurple ),
+              hintText: 'ejemplo@correo.com',
+              labelText: 'Correo electrónico',
+              counterText: snapshot.data,
+              errorText: snapshot.error
+            ),
+            onChanged: bloc.changeEmail ,
+          ),
+        );
+
+      },
     );
   }
 
-  _createInputPassword(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: TextField(
-        obscureText: true,
-        decoration: InputDecoration(
-          icon: Icon( Icons.lock_outline , color: Colors.deepPurple ),
-          labelText: 'Contraseña',
-        ),
-      ),
+  _createInputPassword( LoginBloc bloc ){
+
+    return StreamBuilder(
+      stream: bloc.passwordStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: TextField(
+            obscureText: true,
+            decoration: InputDecoration(
+              icon: Icon( Icons.lock_outline , color: Colors.deepPurple ),
+              labelText: 'Contraseña',
+              counterText: snapshot.data,
+              errorText: snapshot.error
+            ),
+            onChanged: bloc.changePassword,
+          ),
+        );
+
+      },
     );
   }
 
-  _createButton(){
-    return RaisedButton(
-      onPressed: (){},
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 5.0),
-        child: Text('Ingresar'),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.0)
-      ),
-      color: Colors.deepPurple,
-      textColor: Colors.white,
+  _createButton( LoginBloc bloc ){
+
+    return StreamBuilder(
+      stream: bloc.formValidStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+
+        return RaisedButton(
+          onPressed: (!snapshot.hasData) ? null : (){},
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 5.0),
+            child: Text('Ingresar'),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.0)
+          ),
+          color: Colors.deepPurple,
+          textColor: Colors.white,
+        );
+
+      },
     );
+
   }
 }
